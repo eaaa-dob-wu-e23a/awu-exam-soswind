@@ -2,7 +2,11 @@
 export default {
   content: ["./app/**/*.{ts,tsx,jsx,js}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ["Roboto-Regular", "sans-serif", "Roboto-Bold", "Roboto-Light"],
+      },
+    },
   },
   plugins: [],
   darkMode: "media",
