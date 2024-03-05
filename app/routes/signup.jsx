@@ -1,23 +1,31 @@
-import { Form } from "@remix-run/react";
+import { Form, useLoaderData, NavLink } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
+import { auth } from "../sessions/auth.server";
+import mongoose from "mongoose";
+import { sessionStorage } from "../sessions/session.server";
 
 
 export async function loader({ request }) {
-    const formData = new URLSearchParams(await request.text());
-    const { username, email, password } = Object.fromEntries(formData);
 
-    try {
-        const newUser = await User.create({ username, email, password });
-        console.log("Bruger oprettet", { username, email, password });
-        return json({ message: "Bruger oprettet" }, { status: 201 });
-    } catch (error) {
-        console.error("Fejl ved oprettelse af bruger", error);
-        return json({ error: "Fejl ved oprettelse af bruger" }, { status: 500 });
-    }
+    const user = await auth.isAuthenticated(request, {
+        successRedirect: "/signin"
+    });
+
+    const session = await sessionStorage.getSession(request.headers.get("Cookie"));
+    const error = session.get("authError");
+    session.unset("authError");
+
+    const headers = new Headers({
+        "Set-Cookie": await sessionStorage.commitSession(session),
+    });
+
+    return json({ error }, { headers });
 }
 
 
+
 export default function Signup() {
+    const loaderData = useLoaderData();
 
     return (
 
@@ -44,7 +52,7 @@ export default function Signup() {
                 </Form>
 
                 <p>
-                    <a href="/signin" className="p-8 m-8 text-orange-600 hover:underline">Har du allerede en konto? Log ind her</a>
+                    <NavLink to="/signin" className="p-8 m-8 text-orange-600 hover:underline">Har du allerede en konto? Log ind her</NavLink>
                 </p>
 
             </div>

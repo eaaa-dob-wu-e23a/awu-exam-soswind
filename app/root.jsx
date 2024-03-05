@@ -6,10 +6,13 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
 import styles from "./tailwind.css";
+import { auth } from "./sessions/auth.server";
 
 import Navbar from "./components/Navbar";
+import LoggedInNavbar from "./components/LoggedInNavbar";
 
 export const links = () => [
   {
@@ -22,7 +25,14 @@ export function meta() {
   return [{ title: "Aarhus Events" }];
 }
 
+export async function loader({ request }) {
+  return await auth.isAuthenticated(request);
+}
+
+
 export default function App() {
+  const user = useLoaderData();
+
   return (
     <html lang="en">
       <head>
@@ -34,7 +44,7 @@ export default function App() {
 
       </head>
       <body>
-        <Navbar />
+        {user ? <LoggedInNavbar /> : <Navbar />}
         <Outlet />
         <ScrollRestoration />
         <Scripts />
