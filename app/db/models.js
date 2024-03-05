@@ -2,6 +2,27 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
+const userSchema = new Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+  },
+  // Automatically add `createdAt` and `updatedAt` timestamps:
+  // https://mongoosejs.com/docs/timestamps.html
+  { timestamps: true },
+);
+
+
 const entrySchema = new Schema(
   {
     date: {
@@ -31,5 +52,10 @@ export const models = [
     name: "Entry",
     schema: entrySchema,
     collection: "entries",
+  },
+  {
+    name: "User",
+    schema: userSchema,
+    collection: "users",
   },
 ];
