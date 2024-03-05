@@ -18,7 +18,7 @@ export default function Profile() {
             <div className="flex-1 bg-white p-6 rounded-lg shadow-lg">
                 <h1 className="text-2xl font-bold mb-4">Dine oplysninger</h1>
                 <h2 className="text-xl font-semibold mb-2">Brugeroplysninger</h2>
-                <p className="mb-2"><strong>Navn:</strong> {user.name}</p>
+                <p className="mb-2"><strong>Navn:</strong> {user.username}</p>
                 <p className="mb-4"><strong>Email:</strong> {user.email}</p>
                 <h2 className="text-xl font-semibold mb-2">Dine events</h2>
             </div>

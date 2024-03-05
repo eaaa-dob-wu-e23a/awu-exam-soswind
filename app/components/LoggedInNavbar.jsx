@@ -10,7 +10,7 @@ export default function LoggedInNavbar() {
         </NavLink>
       </div>
       <div className="flex items-center justify-end">
-        <NavLink to="#" className="font-semibold text-lg text-gray-800 hover:text-gray-500">Events</NavLink>
+        <NavLink to="/events" className="font-semibold text-lg text-gray-800 hover:text-gray-500">Events</NavLink>
         <NavLink to="/profile" className="font-semibold text-lg ml-4 text-gray-800 hover:text-gray-500">Profil</NavLink>
         <NavLink to="/add-event" className="font-semibold text-lg ml-4 text-gray-800 hover:text-gray-500">Opret event</NavLink>
       </div>

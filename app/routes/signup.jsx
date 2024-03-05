@@ -7,7 +7,7 @@ import { sessionStorage } from "../sessions/session.server";
 
 export async function loader({ request }) {
 
-    const user = await auth.isAuthenticated(request, {
+    await auth.isAuthenticated(request, {
         successRedirect: "/signin"
     });
 
@@ -68,11 +68,9 @@ export async function action({ request }) {
     const result = await mongoose.models.User.create({ username, email, password, confirmPassword });
 
     if (result) {
-        redirect("/signin");
-        return json({ message: "Bruger oprettet" }, { status: 201 });
+        return redirect("/signin");
     } else {
-        redirect("/signup");
-        return json({ error: "Fejl ved oprettelse af bruger" }, { status: 500 });
+        return redirect("/signup");
     }
 
 }
