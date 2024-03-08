@@ -17,7 +17,10 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+
     },
+    events: [{ type: Schema.Types.ObjectId, ref: "Event" }],
+    registeredEvents: [{ type: Schema.Types.ObjectId, ref: "Event" }],
   },
   // Automatically add `createdAt` and `updatedAt` timestamps:
   // https://mongoosejs.com/docs/timestamps.html
@@ -38,7 +41,6 @@ const eventSchema = new mongoose.Schema(
     },
     date: {
       type: Date,
-      required: true,
     },
     time: {
       type: String,
@@ -50,13 +52,13 @@ const eventSchema = new mongoose.Schema(
     },
     price: {
       type: Number,
-      required: true,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
+    attendees: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
 
     { timestamps: true },

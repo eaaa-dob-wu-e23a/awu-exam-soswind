@@ -1,4 +1,4 @@
-import { Form } from "@remix-run/react";
+import { Form, useNavigate } from "@remix-run/react";
 import { auth } from "../sessions/auth.server";
 import mongoose from "mongoose";
 import { json, redirect } from '@remix-run/node';
@@ -15,6 +15,13 @@ export async function loader({ request }) {
 }
 
 export default function AddEvent() {
+    const navigate = useNavigate();
+
+    function handleCancel(e) {
+        e.preventDefault();
+        navigate("/events");
+    }
+
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 py-6 sm:px-6 lg:px-8">
@@ -25,38 +32,38 @@ export default function AddEvent() {
                     <div className="rounded-md shadow-sm space-y-4">
                         <div>
                             <label htmlFor="title" className="sr-only">Titel på event</label>
-                            <input type="text" id="title" name="title" required className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-black-300 placeholder-black-500 text-black-900 rounded-t-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-m" placeholder="Titel på event" />
+                            <input type="text" id="title" name="title" required className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-black-300 placeholder-black-500 text-black-900 rounded-t-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 text-lg" placeholder="Titel på event" />
                         </div>
     
                         <div>
                             <label htmlFor="description" className="sr-only">Beskrivelse</label>
-                            <textarea id="description" name="description" required className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-black-300 placeholder-black-500 text-black-900 rounded-t-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-m" placeholder="Beskrivelse"></textarea>
+                            <textarea id="description" name="description" required className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-black-300 placeholder-black-500 text-black-900 rounded-t-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 text-lg" placeholder="Beskrivelse"></textarea>
                         </div>
     
                         <div>
                             <label htmlFor="date" className="sr-only">Dato</label>
-                            <input type="date" id="date" name="date" required className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-black-300 placeholder-black-500 text-black-900 rounded-t-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-m" />
+                            <input type="date" id="date" name="date" required className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-black-300 placeholder-black-500 text-black-900 rounded-t-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 text-lg" />
                         </div>
     
                         <div>
                             <label htmlFor="time" className="sr-only">Tidspunkt</label>
-                            <input type="time" id="time" name="time" required className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-black-300 placeholder-black-500 text-black-900 rounded-t-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-m" />
+                            <input type="time" id="time" name="time" required className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-black-300 placeholder-black-500 text-black-900 rounded-t-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 text-lg" />
                         </div>
     
                         <div>
                             <label htmlFor="location" className="sr-only">Lokation</label>
-                            <input type="text" id="location" name="location" required className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-black-300 placeholder-black-500 text-black-900 rounded-t-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-m" placeholder="Lokation" />
+                            <input type="text" id="location" name="location" required className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-black-300 placeholder-black-500 text-black-900 rounded-t-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 text-lg" placeholder="Lokation" />
                         </div>
 
                         <div>
                             <label htmlFor="price" className="sr-only">Pris</label>
-                            <input type="number" id="price" name="price" required className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-black-300 placeholder-black-500 text-black-900 rounded-t-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-m" placeholder="Pris i kr." />
+                            <input type="number" id="price" name="price" className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-black-300 placeholder-black-500 text-black-900 rounded-t-md focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 text-m" placeholder="Pris i kr." />
                             </div>
                     </div>
     
                     <div className="space-y-4">
-                        <button type="submit" className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-semibold rounded-md text-white bg-orange-600 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2">Opret event</button>
-                        <button type="reset" className="mt-3 group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-semibold rounded-md text-black-800 bg-orange-300 hover:bg-orange-200 focus:outline-none focus:ring-2 focus:ring-offset-2">Annuller</button>
+                        <button type="submit" className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-m font-semibold rounded-md text-white bg-orange-600 hover:bg-orange-400 focus:outline-none focus:ring-2 focus:ring-offset-2">Opret event</button>
+                        <button type="reset" className="mt-3 group relative w-full flex justify-center py-2 px-4 border border-transparent text-m font-semibold rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2" onClick={handleCancel}>Annuller</button>
                     </div>
                 </Form>
             </div>
@@ -79,8 +86,17 @@ export async function action({ request }) {
     try {
         const newEvent = await mongoose.models.Event.create(event);
 
+        const userDoc = await mongoose.models.User.findById(user._id);
+
+        userDoc.events.push(newEvent._id);
+        await userDoc.save();
+
         return redirect(`/events/${newEvent._id}`);
     } catch (error) {
+        console.error('Error:', error.message);
+        console.error('Stack:', error.stack);
+
+
 
         return json({ error: 'An error occurred while creating the event' }, { status: 500 });
     }
