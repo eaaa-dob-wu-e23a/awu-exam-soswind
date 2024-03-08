@@ -5,13 +5,21 @@ import { sessionStorage } from "../sessions/session.server";
 import { useState, useEffect } from "react";
 
 
-export async function loader({ request }) {
+export async function loader({ request}) {
     const url = new URL(request.url);
     const searchTerm = url.searchParams.get('searchTerm');
+    const searchDate = url.searchParams.get('searchDate');
+    
 
-    const query = searchTerm
-        ? { $or: [{ 'name': new RegExp(searchTerm, 'i') }, { 'location': new RegExp(searchTerm, 'i') }] }
-        : {};
+    let query = {};
+
+    if (searchTerm) {
+        query = { $or: [{ 'title': new RegExp(searchTerm, 'i') }, { 'location': new RegExp(searchTerm, 'i') }] };
+    }
+
+    if (searchDate) {
+        query.date = new Date(searchDate);
+    }
 
     const events = await mongoose.models.Event.find(query)
         .sort({ date: "asc" })
@@ -28,16 +36,28 @@ export default function Events() {
     const { events, currentUserId } = useLoaderData();
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
+    const [searchDate, setSearchDate] = useState('');
 
     useEffect(() => {
+        let url = '/events?';
         if (searchTerm) {
-            navigate(`/events?searchTerm=${searchTerm}`);
+            url +=`searchTerm=${searchTerm}`;
         }
-    }, [searchTerm]);
+        if (searchDate) {
+            url += `&searchDate=${searchDate}`;
+            console.log(searchDate, url);
+        }
+        navigate(url);
+    }, [searchTerm, searchDate]);
 
     const handleSearch = (e) => {
         e.preventDefault();
         setSearchTerm(e.target.value || '');
+    };
+
+    const handleDateChange = (e) => {
+        setSearchDate(e.target.value || '');
+
     };
     
 
@@ -59,6 +79,12 @@ export default function Events() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="border border-lg border-gray-300 rounded-lg shadow-sm p-2 flex-grow"
                 />
+                <input
+                type="date"
+                value={searchDate}
+                onChange={handleDateChange}
+                className="border border-lg border-gray-300 rounded-lg shadow-sm p-2 ml-4"
+                />
                 <button className=" bg-orange-500 hover:bg-orange-400 border rounded-lg text-white p-2 ml-4 w-24" type="submit">Søg</button>
                 </div>
             </Form>
@@ -66,7 +92,7 @@ export default function Events() {
 
             <div className="max-w-md w-full space-y-6">
                 <h1 className="mt-6 text-center text-3xl font-extrabold text-black-500">Events i Aarhus</h1>
-                <p className="flex text-center text-m font-semibold m-6 py-4">Her kan du se en oversigt over de events, der finder sted i Aarhus i den kommende periode.</p>
+                <p className="flex text-center text-m font-semibold m-6 py-4">Her kan du se en oversigt over de events, der finder sted i Aarhus, for studerende i den kommende periode.</p>
                 <ul>
 
                 {events.map((event, index) => (
@@ -104,5 +130,7 @@ export default function Events() {
             </div>
         </div>
     );
+
 }
+
 
