@@ -48,7 +48,13 @@ export default function Signup() {
                     <label className="font-semibold" htmlFor="confirmPassword">Gentag password</label>
                     <input type="password" id="confirmPassword" name="confirmPassword" placeholder="1234" required className="p-4 mb-8 rounded-lg border border-gray-300 focus:outline-none focus:border-orange-400" />
 
-                    <button className="bg-orange-600 text-white font-semibold p-4 rounded-lg hover:bg-orange-400" type="submit">Opret bruger</button>
+                    <button className="bg-orange-600 text-white font-semibold p-4 rounded-lg hover:bg-orange-400 mb-4" type="submit">Opret bruger</button>
+
+                    {loaderData?.error ? (
+                        <div className="text-center text-red-600 font-semibold text-sm">
+                            <p className=" text-red-500 p-8">{loaderData?.error}</p>
+                        </div>
+                    ) : null}
                 </Form>
 
                 <p>
@@ -65,12 +71,35 @@ export default function Signup() {
 export async function action({ request }) {
     const formData = await request.text();
     const { username, email, password, confirmPassword } = Object.fromEntries(new URLSearchParams(formData));
-    const result = await mongoose.models.User.create({ username, email, password, confirmPassword });
 
-    if (result) {
-        return redirect("/signin");
-    } else {
-        return redirect("/signup");
+    // Input validation
+    if (password !== confirmPassword) {
+        return setErrorAndRedirect("Passwords matcher ikke");
     }
 
+    const existingUser = await mongoose.models.User.findOne({ email });
+    if (existingUser) {
+        return setErrorAndRedirect("En bruger med denne email findes allerede");
+    }
+
+    try {
+        const result = await mongoose.models.User.create({ username, email, password, confirmPassword });
+
+        return redirect("/signin");
+    } catch (error) {
+        console.error(error);
+
+        return setErrorAndRedirect("Der opstod en fejl under oprettelsen af brugeren. Prøv igen.");
+    }
+
+    async function setErrorAndRedirect(message) {
+        const session = await sessionStorage.getSession(request.headers.get("Cookie"));
+        session.set("authError", message);
+
+        const headers = new Headers({
+            "Set-Cookie": await sessionStorage.commitSession(session),
+        });
+
+        return redirect("/signup", { headers });
+    }
 }

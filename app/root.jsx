@@ -1,13 +1,12 @@
 import {
   Links,
-  Link,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
   useLoaderData,
-  
+
 } from "@remix-run/react";
 import styles from "./tailwind.css";
 import { auth } from "./sessions/auth.server";
@@ -41,7 +40,7 @@ export default function App() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        <link rel="icon" type="image/png" href="/favicon-logo.png" /> {/* Tilføj dette linje */}
+        <link rel="icon" type="image/png" href="/favicon-logo.png" /> 
 
       </head>
       <body>

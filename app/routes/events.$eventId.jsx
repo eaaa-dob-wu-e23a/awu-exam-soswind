@@ -4,6 +4,7 @@ import { json } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/node";
 import { sessionStorage } from "../sessions/session.server";
+import { useState } from "react";
 
 export async function loader({ request, params }) {
 
@@ -18,12 +19,14 @@ export async function loader({ request, params }) {
         return json({ event: null, authUser });
     }
 
-    const event = await mongoose.models.Event.findById(params.eventId).populate("createdBy");
+    const event = await mongoose.models.Event.findById(params.eventId).populate("createdBy").populate("attendees");
     return json ({ event, authUser });
 }
 
 export default function Event() {
     const { event, authUser } = useLoaderData();
+
+    const attendeeIds = event.attendees.map(attendee => attendee._id.toString());
 
     function confirmDelete(e) {
         if (!confirm("Er du sikker på at du vil slette dette event?")) {
@@ -49,10 +52,10 @@ export default function Event() {
                         Oprettet af: {authUser._id === event.createdBy._id ? "dig" : event.createdBy.username}
                      </p>
                     )}
-                </p>    
+
                 {authUser && authUser._id !== event.createdBy._id && (
     <div className="flex justify-center mt-4">
-        {event.attendees.includes(authUser._id) ? (
+                {attendeeIds.includes(authUser._id) ? (
             <Form action="unRegister" method="post">
                 <button className="w-full bg-orange-600 hover:bg-orange-400 text-white font-bold py-2 px-4 rounded mt-4">Afmeld event</button>
             </Form>
@@ -62,7 +65,16 @@ export default function Event() {
             </Form>
         )}
     </div>
-)}
+    )}
+
+            <div>
+                <p className="mt-2 text-center text-m font-semibold text-black-500">Deltagere:</p>
+                <ul>
+                    {event.attendees.map((attendee, index) => (
+                        <li key={index}>{attendee.username}</li>
+                    ))}
+                </ul>
+                </div>
 
                 {!authUser && (
 
@@ -75,7 +87,8 @@ export default function Event() {
                  </div>
                 )}
 
-                {authUser && authUser._id === event.createdBy._id && (
+
+{authUser && authUser._id && event.createdBy && event.createdBy._id && authUser._id === event.createdBy._id && (
 
                     <div className="flex flex-col items-center">
                     <Form action="update">
@@ -86,8 +99,11 @@ export default function Event() {
                         <button className="bg-orange-600 text-white font-semibold p-4 rounded-lg hover:bg-orange-400">Slet event</button>
                     </Form>
                 </div>
+
                 )}
+            </p>
             </div>
+
         </div>
     );
 }
@@ -111,7 +127,7 @@ export async function action({ request, params }) {
     if (!Array.isArray(event.attendees)) {
         event.attendees = [];
     }
-    if (!event.attendees.includes(user._id.toString())) {
+    if (!event.attendees.map(id => id.toString()).includes(user._id.toString())) {
         event.attendees.push(user._id);
     }
 

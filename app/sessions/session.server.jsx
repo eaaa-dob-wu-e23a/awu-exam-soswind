@@ -8,6 +8,8 @@ export let sessionStorage = createCookieSessionStorage({
         httpOnly: true,
         sameSite: "lax",
         secrets: ["dont-tell-anyone"],
+        secure: process.env.NODE_ENV === "production", // enable this in prod only
+
     },
 });
 

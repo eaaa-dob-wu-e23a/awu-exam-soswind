@@ -2,27 +2,31 @@ import { Form, useLoaderData, NavLink } from "@remix-run/react";
 import { auth } from "../sessions/auth.server";
 import { sessionStorage  } from "../sessions/session.server";
 import { json } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 
 export async function loader({ request }) {
-    const user = await auth.isAuthenticated(request, {
-        successRedirect: "/profile"
+    // If the user is already authenticated redirect to /posts directly
+    await auth.isAuthenticated(request, {
+      successRedirect: "/posts"
     });
-
+    // Retrieve error message from session if present
     const session = await sessionStorage.getSession(request.headers.get("Cookie"));
+    // Get the error message from the session
     const error = session.get("authError");
-
+  
     session.unset("authError");
-
+    
     const headers = new Headers({
-        "Set-Cookie": await sessionStorage.commitSession(session),
+      "Set-Cookie": await sessionStorage.commitSession(session),
     });
+  
+    return json({ error }, { headers}); // return the error message
+  }
 
-    return json({ error }, { headers });
-
-}
 
 export default function Signin() {
     const loaderData = useLoaderData();
+    console.log("error", loaderData?.error);
 
     return (
 
@@ -31,19 +35,21 @@ export default function Signin() {
             <img src="exam-logo.png" alt="logo" className="flex h-20 w-30 mb-8 justify-center" />
 
             <h1 className="font-semibold text-xl">Log ind</h1>
-            <Form className="flex flex-col w-full" id="signin" method="post">
+            <Form className="flex flex-col w-full" id="signin-form" method="post">
             <label className="font-semibold" htmlFor="mail">E-mail</label>
             <input type="email" id="email" name="email" placeholder="test@mail.dk" required
             className="p-4 mb-4 rounded-lg border border-gray-300 focus:outline-none focus:border-orange-400" />
 
             <label className="font-semibold" htmlFor="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="1234" required
+            <input type="password" id="password" name="password" placeholder="1234"
             className="p-4 mb-8 rounded-lg border border-gray-300 focus:outline-none focus:border-orange-400" />
 
             <button className="bg-orange-600 text-white font-semibold p-4 rounded-lg hover:bg-orange-400" type="submit">Log ind</button><br></br>
 
             {loaderData?.error ? (
-                <p className="text-red-500 mt-4">{loaderData?.error?.message}</p>
+                <div className="text-center text-red-600 font-semibold text-xl">    
+                <p className=" text-red-500 p-8">{loaderData?.error.message}</p>
+            </div>
             ) : null}
             </Form>
 
@@ -59,7 +65,8 @@ export default function Signin() {
 
 export async function action({ request }) {
     return await auth.authenticate("user-pass", request, {
-        successRedirect: "/profile",
-        failureRedirect: "/signup",
+      successRedirect: "/profile",
+      failureRedirect: "/signin"
     });
-    }
+  }
+    

@@ -2,6 +2,7 @@ import { sessionStorage } from "../sessions/session.server";
 import { redirect } from "@remix-run/node";
 import mongoose from "mongoose";
 import { auth } from "../sessions/auth.server";
+import { json } from "@remix-run/node";
 
 
 export async function loader({ request }) {
@@ -41,6 +42,8 @@ export async function action({ request, params }) {
     return redirect(`/events/${event._id}`);
 
 }
+
+
 
 
 

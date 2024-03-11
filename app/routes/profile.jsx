@@ -2,6 +2,7 @@ import { Form } from "@remix-run/react";
 import { auth } from "../sessions/auth.server";
 import { useLoaderData } from "@remix-run/react";
 import mongoose from "mongoose";
+import { useState } from "react";
 
 
 export async function loader({ request }) {
@@ -10,14 +11,33 @@ export async function loader({ request }) {
     });
 
     const userData = await mongoose.models.User.findById(user._id).populate('events').populate('registeredEvents');
-    console.log(userData);
 
     return { data: userData};
 }
 
 export default function Profile() {
     const { data: user } = useLoaderData();
-    console.log(user);
+    const [loading, setLoading] = useState(false);
+
+    async function handleUnregister(eventId) {
+        setLoading(true);
+        try {
+          const response = await fetch(`/events/${eventId}/unregister`, {
+            method: "POST",
+            credentials: "include",
+          });
+          if (response.ok) {
+            console.log("Successfully unregistered from event:", eventId);
+            // Hent data igen efter en vellykket afmelding
+            window.location.reload();
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    
 
     return (
         <div className="flex flex-col items-center justify-start h-screen bg-gray-100 p-10">
@@ -53,6 +73,12 @@ export default function Profile() {
                             
                             <a className="font-semibold text-lg hover:text-gray-500" href={`/events/${event._id}`}>{event.title}<br></br>
                             {event.location}</a>
+
+                            <button className="bg-red-600 text-white font-semibold p-2 ml-2 rounded-lg hover:bg-red-400"
+                                onClick={() => handleUnregister(event._id)}
+                                disabled={loading}>
+                                    Afmeld
+                                    </button>
                             
                             </li>
                     ))}
@@ -71,3 +97,8 @@ export default function Profile() {
 export async function action({ request }) {
     await auth.logout(request, { redirectTo: "/signin" });
 }
+
+
+
+
+

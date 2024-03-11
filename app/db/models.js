@@ -8,24 +8,45 @@ const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      required: true,
     },
     email: {
       type: String,
       required: true,
+      type: String,
+      unique: true,
     },
     password: {
       type: String,
       required: true,
+      select: false,
 
     },
     events: [{ type: Schema.Types.ObjectId, ref: "Event" }],
     registeredEvents: [{ type: Schema.Types.ObjectId, ref: "Event" }],
+    unRegisteredEvents: [{ type: Schema.Types.ObjectId, ref: "Event" }],
   },
   // Automatically add `createdAt` and `updatedAt` timestamps:
   // https://mongoosejs.com/docs/timestamps.html
   { timestamps: true },
 );
+
+
+
+// Hash brugerens password før det gemmes i databasen
+
+userSchema.pre("save", async function (next) {
+  const user = this;
+
+  if (!user.isModified("password")) {
+    return next();
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(user.password, salt);
+  next();
+});
+
+
 
 
 const eventSchema = new mongoose.Schema(
@@ -59,6 +80,7 @@ const eventSchema = new mongoose.Schema(
       required: true,
     },
     attendees: [{ type: Schema.Types.ObjectId, ref: "User" }],
+
   },
 
     { timestamps: true },

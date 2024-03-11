@@ -61,11 +61,6 @@ export default function Events() {
     };
     
 
-    if (status === 401) {
-    
-    }
-    
-
     return (
 
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 py-6 sm:px-6 lg:px-8">
@@ -108,7 +103,7 @@ export default function Events() {
                              </Link>
                              </div>
 
-                         {event.createdBy._id === currentUserId && (
+                             {event.createdBy && event.createdBy._id === currentUserId && (
 
                             <div className="space-y-4">
                             <div className="flex justify-center">
