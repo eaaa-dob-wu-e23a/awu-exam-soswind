@@ -14,7 +14,7 @@ auth.use(
     let password = form.get("password");
     let confirmPassword = form.get("confirmPassword");
 
-    // do some validation, errors are saved in the sessionErrorKey
+    
     if (!email || typeof email !== "string" || !email.trim()) {
       throw new AuthorizationError("Email er påkrævet");
     }

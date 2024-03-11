@@ -149,7 +149,7 @@ export async function action({ request, params }) {
 
   const eventToUpdate = await mongoose.models.Event.findById(params.eventId);
 
-  if (!eventToUpdate.createdBy.toString() === user._id.toString()) {
+  if (eventToUpdate.createdBy.toString() !== user._id.toString()) {
     return redirect(`/events/${params.eventId}`);
   }
 

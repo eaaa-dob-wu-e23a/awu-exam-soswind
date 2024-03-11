@@ -3,8 +3,6 @@ import mongoose from "mongoose";
 import { json } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/node";
-import { sessionStorage } from "../sessions/session.server";
-import { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 
 export async function loader({ request, params }) {
@@ -13,21 +11,34 @@ export async function loader({ request, params }) {
     authUser = await auth.isAuthenticated(request);
   } catch (error) {
     console.error(error);
+    return json({ error: error.message }, { status: 500 });
   }
+
   if (!params.eventId) {
     console.error("No event id found in loader");
     return json({ event: null, authUser });
   }
 
-  const event = await mongoose.models.Event.findById(params.eventId)
+  let event = null; 
+    try {
+
+    event = await mongoose.models.Event.findById(params.eventId)
     .populate("createdBy")
     .populate("attendees");
-  return json({ event, authUser });
+    } catch (error) {
+    console.error(error);
+    return json({ error: error.message }, { status: 500 });
+    }
+    return json({ event, authUser });
 }
 
 export default function Event() {
   const { event, authUser } = useLoaderData();
   const { isDarkMode } = useTheme();
+
+  if (!event || !event.attendees) {
+    return <div>No event or attendees found</div>;
+  }
 
   const attendeeIds = event.attendees.map((attendee) =>
     attendee._id.toString(),
@@ -139,17 +150,38 @@ export default function Event() {
   );
 }
 
-// Action sikrer, at en bruger kan tilmelde sig et event, og kun hvis brugeren er logget ind.
+// Sikrer, at en bruger kan tilmelde sig et event, og kun hvis brugeren er logget ind.
 // Sikrer også at brugeren kun kan tilmelde sig et event én gang.
 
 export async function action({ request, params }) {
-  const authUser = await auth.isAuthenticated(request, {
-    failureRedirect: "/signin",
-  });
+    let authUser = null;
 
-  const user = await mongoose.models.User.findById(authUser._id);
+    try {
+        authUser = await auth.isAuthenticated(request, {
+            failureRedirect: "/signin",
+        });
+    } catch (error) {
+        console.error(error);
+        return json({ error: error.message }, { status: 500 });
+    }
 
-  const event = await mongoose.models.Event.findById(params.eventId);
+    let user = null;
+    try {
+        user = await mongoose.models.User.findById(authUser._id);
+    } catch (error) {
+        console.error(error);
+        return json({ error: error.message }, { status: 500 });
+    }
+
+
+    let event = null;
+    try {
+        event = await mongoose.models.Event.findById(params.eventId);
+    } catch (error) {
+        console.error(error);
+        return json({ error: error.message }, { status: 500 });
+    }
+
 
   if (!event) {
     return json({ error: "Event not found" }, { status: 404 });
@@ -175,8 +207,13 @@ export async function action({ request, params }) {
     user.registeredEvents.push(event._id);
   }
 
-  await event.save();
-  await user.save();
+  try {
+    await event.save();
+    await user.save();
+  } catch (error) {
+    console.error(error);
+    return json({ error: error.message }, { status: 500 });
+  }
 
   return redirect(`/events/${event._id}`);
 }

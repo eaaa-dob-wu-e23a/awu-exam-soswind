@@ -4,45 +4,48 @@ import mongoose from "mongoose";
 import { auth } from "../sessions/auth.server";
 import { json } from "@remix-run/node";
 
+
 export async function loader({ request }) {
-  const session = await sessionStorage.getSession(
-    request.headers.get("Cookie"),
-  );
 
-  const { eventId } = request.params;
+    await sessionStorage.getSession(request.headers.get("Cookie"));
 
-  return { eventId };
-}
+    const { eventId } = request.params;
 
-// Sikrer, at brugeren kan afmelde sig et event igen.
+    return ({ eventId});
+};
+
+// Sikrer, at brugeren kan afmelde sig et event igen. 
 
 export async function action({ request, params }) {
-  const authUser = await auth.isAuthenticated(request, {
-    failureRedirect: "/signin",
-  });
+    const authUser = await auth.isAuthenticated(request, {
+        failureRedirect: "/signin",
+    });
 
-  const session = await sessionStorage.getSession(
-    request.headers.get("Cookie"),
-  );
+    await sessionStorage.getSession(request.headers.get("Cookie"));
 
-  const user = await mongoose.models.User.findById(authUser._id);
 
-  const event = await mongoose.models.Event.findById(params.eventId);
+    const user = await mongoose.models.User.findById(authUser._id);
 
-  if (!event) {
-    return json({ error: "Event not found" }, { status: 404 });
-  }
+    const event = await mongoose.models.Event.findById(params.eventId);
 
-  event.attendees = event.attendees.filter(
-    (id) => id.toString() !== user._id.toString(),
-  );
+    if (!event) {
+        return json({ error: 'Event not found' }, { status: 404 });
+    }
 
-  user.registeredEvents = user.registeredEvents.filter(
-    (id) => id.toString() !== event._id.toString(),
-  );
+    event.attendees = event.attendees.filter(id => id.toString() !== user._id.toString());
 
-  await event.save();
-  await user.save();
+    user.registeredEvents = user.registeredEvents.filter(id => id.toString() !== event._id.toString());
 
-  return redirect(`/events/${event._id}`);
+    await event.save();
+    await user.save();
+
+    return redirect(`/events/${event._id}`);
+
 }
+
+
+
+
+
+
+

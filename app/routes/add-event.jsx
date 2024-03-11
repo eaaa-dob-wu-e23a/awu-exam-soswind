@@ -157,7 +157,7 @@ export async function action({ request }) {
     console.error("Stack:", error.stack);
 
     return json(
-      { error: "An error occurred while creating the event" },
+      { error: "Der skete en fejl ved oprettelsen af eventet" },
       { status: 500 },
     );
   }

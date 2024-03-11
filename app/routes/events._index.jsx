@@ -51,13 +51,11 @@ export default function Events() {
     }
     if (searchDate) {
       url += `&searchDate=${searchDate}`;
-      console.log(searchDate, url);
     }
     navigate(url);
   }, [searchTerm, searchDate]);
 
   const handleSearch = (e) => {
-    e.preventDefault();
     setSearchTerm(e.target.value || "");
   };
 
@@ -104,7 +102,7 @@ export default function Events() {
         <ul>
           {events.map((event, index) => (
             <li
-              key={index}
+              key={event._id}
               className="py-4 text-center text-sm text-black-500 border border-gray-300 rounded-lg shadow-sm p-4 mb-4"
             >
               <div className="mr-2 py-6 font-semibold text-2xl">

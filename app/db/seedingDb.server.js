@@ -1,40 +1,48 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 export default async function seedDb() {
-  const entryCount = await mongoose.models.Entry.countDocuments();
-  if (entryCount === 0) {
+  const userCount = await mongoose.models.User.countDocuments();
+
+  if (userCount === 0) {
     console.log("Seeding database...");
-    insertData();
+    await insertUsers();
   }
 }
 
 async function insertData() {
-  const entries = [
+  const users = [
     {
-      date: new Date("2024-01-01"),
-      type: "work",
-      text: "I'm working",
+      username: "Søren Madsen",
+      email: "madsen@mail.dk",
+      password: await bcrypt.hash("password", 10),
     },
     {
-      date: new Date("2024-01-15"),
-      type: "learning",
-      text: "I'm learning",
+      username: "Mie Hansen",
+      email: "mie@mail.dk",
+      password: await bcrypt.hash("password", 10),
     },
     {
-      date: new Date("2024-02-01"),
-      type: "interesting-thing",
-      text: "I'm doing something interesting",
+      username: "Martin Hansen",
+      email: "martin@mail.dk",
+      password: await bcrypt.hash("password", 10),
     },
     {
-      date: new Date("2024-02-15"),
-      type: "learning",
-      text: "Remix Auth with FormStrategy and Post App",
+      username: "Søs Wind",
+      email: "soswind@mail.dk",
+      password: await bcrypt.hash("password", 10),
     },
     {
-      date: new Date("2024-02-22"),
-      type: "work",
-      text: "Remix Work Journal",
+      username: "Hanne Andersen",
+      email: "hanne@mail.dk",
+      password: await bcrypt.hash("password", 10),
     },
+    {
+      username: "Maj Jensen",
+      email: "maj@mail.dk",
+      password: await bcrypt.hash("password", 10),
+    },
+
   ];
-  await mongoose.models.Entry.insertMany(entries);
+  await mongoose.models.User.insertMany(users);
 }

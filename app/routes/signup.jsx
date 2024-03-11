@@ -121,7 +121,6 @@ export async function action({ request }) {
     new URLSearchParams(formData),
   );
 
-  // Input validation
   if (password !== confirmPassword) {
     return setErrorAndRedirect("Passwords matcher ikke");
   }
@@ -132,7 +131,7 @@ export async function action({ request }) {
   }
 
   try {
-    const result = await mongoose.models.User.create({
+    await mongoose.models.User.create({
       username,
       email,
       password,

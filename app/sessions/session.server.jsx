@@ -6,7 +6,7 @@ export let sessionStorage = createCookieSessionStorage({
     path: "/",
     httpOnly: true,
     sameSite: "lax",
-    secrets: ["dont-tell-anyone"],
+    secrets: ["en-hemmelighed-schhh"],
     secure: process.env.NODE_ENV === "production", // enable this in prod only
   },
 });

@@ -2,19 +2,17 @@ import { Form, useLoaderData, NavLink } from "@remix-run/react";
 import { auth } from "../sessions/auth.server";
 import { sessionStorage } from "../sessions/session.server";
 import { json } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
 import { useTheme } from "../context/ThemeContext";
 
 export async function loader({ request }) {
-  // If the user is already authenticated redirect to /posts directly
+  
   await auth.isAuthenticated(request, {
-    successRedirect: "/posts",
+    successRedirect: "/profile",
   });
-  // Retrieve error message from session if present
+  
   const session = await sessionStorage.getSession(
     request.headers.get("Cookie"),
   );
-  // Get the error message from the session
   const error = session.get("authError");
 
   session.unset("authError");
@@ -23,7 +21,7 @@ export async function loader({ request }) {
     "Set-Cookie": await sessionStorage.commitSession(session),
   });
 
-  return json({ error }, { headers }); // return the error message
+  return json({ error }, { headers });
 }
 
 export default function Signin() {

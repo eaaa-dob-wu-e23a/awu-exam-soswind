@@ -31,7 +31,7 @@ export default function Profile() {
       });
       if (response.ok) {
         console.log("Successfully unregistered from event:", eventId);
-        // Hent data igen efter en vellykket afmelding
+        
         window.location.reload();
       }
     } catch (error) {
