@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 
 const { Schema } = mongoose;
 
-
 const userSchema = new mongoose.Schema(
   {
     username: {
@@ -19,7 +18,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       select: false,
-
     },
     events: [{ type: Schema.Types.ObjectId, ref: "Event" }],
     registeredEvents: [{ type: Schema.Types.ObjectId, ref: "Event" }],
@@ -29,8 +27,6 @@ const userSchema = new mongoose.Schema(
   // https://mongoosejs.com/docs/timestamps.html
   { timestamps: true },
 );
-
-
 
 // Hash brugerens password før det gemmes i databasen
 
@@ -46,11 +42,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-
-
-
 const eventSchema = new mongoose.Schema(
-
   {
     title: {
       type: String,
@@ -80,15 +72,10 @@ const eventSchema = new mongoose.Schema(
       required: true,
     },
     attendees: [{ type: Schema.Types.ObjectId, ref: "User" }],
-
   },
 
-    { timestamps: true },
+  { timestamps: true },
 );
-
-
-
-
 
 const entrySchema = new Schema(
   {
