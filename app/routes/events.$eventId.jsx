@@ -70,7 +70,6 @@ export default function Event() {
         <p className="mt-2 text-center text-lg font-semibold">
           {event.description}
         </p>
-        <p className="mt-2 text-center text-m font-semibold">
           {authUser && (
             <p className="mt-2 text-center text-m font-semibold">
               Oprettet af:{" "}
@@ -102,7 +101,7 @@ export default function Event() {
             <p className="mt-2 text-center text-m font-semibold text-black-500">
               Deltagere:
             </p>
-            <ul>
+            <ul className="mt-2 font-medium text-center">
               {event.attendees.map((attendee, index) => (
                 <li key={index}>{attendee.username}</li>
               ))}
@@ -144,7 +143,6 @@ export default function Event() {
                 </Form>
               </div>
             )}
-        </p>
       </div>
     </div>
   );

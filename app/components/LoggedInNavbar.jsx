@@ -1,4 +1,4 @@
-import { NavLink, Form } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 
 
@@ -12,7 +12,7 @@ export default function LoggedInNavbar() {
       {" "}
       <div className="flex items-center justify-start">
         <NavLink to="/">
-          <img src="exam-logo.png" alt="logo" className="h-8 w-auto mr-4" />{" "}
+          <img src="/exam-logo.png" alt="logo" className="h-8 w-auto mr-4" />{" "}
           {/* Logo til venstre */}
         </NavLink>
       </div>

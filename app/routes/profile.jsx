@@ -32,6 +32,10 @@ export default function Profile() {
       if (response.ok) {
         console.log("Successfully unregistered from event:", eventId);
         
+        // Jeg er i tvivl om vi må bruge window.location.reload, da den gennemtvinger
+        // en reload af den aktuelle side i browseren, og ikke kun den del af siden der har ændret sig. 
+        // Men jeg løb tør for tid, og nåede ikke at undersøge det nærmere.
+
         window.location.reload();
       }
     } catch (error) {
@@ -40,6 +44,7 @@ export default function Profile() {
       setLoading(false);
     }
   }
+  
 
 
   return (

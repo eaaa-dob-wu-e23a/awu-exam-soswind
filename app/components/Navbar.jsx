@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 
+
 export default function Navbar() {
   const { isDarkMode, toggleTheme } = useTheme();
 
@@ -10,8 +11,8 @@ export default function Navbar() {
     >
       <div className="flex items-center justify-start">
         <NavLink to="/">
-          <img src="exam-logo.png" alt="logo" className="h-8 w-auto mr-4" />{" "}
-          {/* Logo til venstre */}
+          <img src="/exam-logo.png" alt="logo" className="h-8 w-auto mr-4" />
+          
         </NavLink>{" "}
       </div>
       <div className="flex items-center justify-end">
