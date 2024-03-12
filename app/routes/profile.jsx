@@ -41,6 +41,7 @@ export default function Profile() {
     }
   }
 
+
   return (
     <div
       className={`flex flex-col items-center justify-start h-screen p-10 ${isDarkMode ? "bg-dark text-dark" : "bg-light text-dark"}`}
@@ -108,7 +109,7 @@ export default function Profile() {
       </div>
 
       <Form method="post" className="w-full flex justify-end pr-10 pb-4">
-        <button className="bg-orange-600 text-white font-semibold p-4 rounded-lg hover:bg-orange-400">
+        <button type="submit" className="bg-orange-600 text-white font-semibold p-4 rounded-lg hover:bg-orange-400">
           Log ud
         </button>
       </Form>
@@ -118,4 +119,6 @@ export default function Profile() {
 
 export async function action({ request }) {
   await auth.logout(request, { redirectTo: "/signin" });
+  console.log("User has been logged out");
+  return new Response("Logged out", { status: 200 });
 }

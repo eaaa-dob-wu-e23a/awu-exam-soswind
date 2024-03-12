@@ -1,5 +1,6 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, Form } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+
 
 export default function LoggedInNavbar() {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -35,7 +36,9 @@ export default function LoggedInNavbar() {
           Opret event
         </NavLink>
       </div>
+
       <div className="flex items-center">
+
         <input
           id="darkModeToggle"
           type="checkbox"

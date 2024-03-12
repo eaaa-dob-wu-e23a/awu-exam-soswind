@@ -26,7 +26,6 @@ export async function loader({ request }) {
 
 export default function Signin() {
   const loaderData = useLoaderData();
-  console.log("error", loaderData?.error);
   const { isDarkMode } = useTheme();
 
   return (
